@@ -5,7 +5,9 @@
 //---------------------------------------------------------------------------------------
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //---------------------------------------------------------------------------------------
-class X2StrategyElement_DefaultStaffSlots_SF extends X2StrategyElement_DefaultStaffSlots;
+class X2StrategyElement_DefaultStaffSlots_SF extends X2StrategyElement_DefaultStaffSlots config(ScientistStaffSlots);
+
+var config float ScanRateMod;
 
 //---------------------------------------------------------------------------------------
 static function array<X2DataTemplate> CreateTemplates()
@@ -50,14 +52,36 @@ static function X2DataTemplate CreateCommsScientistStaffSlotTemplate()
 	Template.FillFn = FillCommsScientistSlot;
 	Template.EmptyFn = EmptyCommsScientistSlot;
 	Template.GetNameDisplayStringFn = GetNameDisplayStringDefault;
+	Template.GetAvengerBonusAmountFn = GetAvengerBonusCommSci;
 	Template.GetSkillDisplayStringFn = GetSkillDisplayStringDefault;
-	Template.GetBonusDisplayStringFn = GetBonusDisplayStringDefault;
+	Template.GetBonusDisplayStringFn = GetCommSciBonusDisplayString;
 	Template.GetLocationDisplayStringFn = GetLocationDisplayStringDefault;
 	Template.IsUnitValidForSlotFn = IsUnitValidForSlotDefault;
 	Template.IsStaffSlotBusyFn = IsStaffSlotBusyDefault;
 	Template.MatineeSlotName = "Scientist";
 
 	return Template;
+}
+
+static function string GetCommSciBonusDisplayString(XComGameState_StaffSlot SlotState, optional bool bPreview)
+{
+	local string Contribution;
+
+	if (SlotState.IsSlotFilled())
+	{
+		Contribution = string(GetAvengerBonusCommSci(SlotState.GetAssignedStaff(), bPreview));
+	}
+
+	return GetBonusDisplayString(SlotState, "%AVENGERBONUS", Contribution);
+}
+
+static function int GetAvengerBonusCommSci(XComGameState_Unit Unit, optional bool bPreview)
+{
+	local float PercentIncrease;
+
+	PercentIncrease = (1 - default.ScanRateMod)*100;
+
+	return Round(PercentIncrease);
 }
 
 static function FillCommsScientistSlot(XComGameState NewGameState, StateObjectReference SlotRef, StaffUnitInfo UnitInfo)
@@ -69,7 +93,6 @@ static function FillCommsScientistSlot(XComGameState NewGameState, StateObjectRe
 	local array<XComGameState_ScanningSite> PossibleScanningSites;
 	local XComGameState_ScanningSite ScaningSiteState;
 
-
 	FillSlot(NewGameState, SlotRef, UnitInfo, NewSlotState, NewUnitState);
 
 	//Halts bonus to research
@@ -77,7 +100,7 @@ static function FillCommsScientistSlot(XComGameState NewGameState, StateObjectRe
 
 	NewXComHQ = GetNewXComHQState(NewGameState);
 
-	NewScanRate = NewXComHQ.CurrentScanRate * 0.5;
+	NewScanRate = NewXComHQ.CurrentScanRate * default.ScanRateMod;
 	NewXComHQ.CurrentScanRate = NewScanRate;
 
 	PossibleScanningSites = NewXComHQ.GetAvailableScanningSites();
@@ -86,7 +109,7 @@ static function FillCommsScientistSlot(XComGameState NewGameState, StateObjectRe
 		ScaningSiteState = XComGameState_ScanningSite(NewGameState.CreateStateObject(class'XComGameState_ScanningSite', ScaningSiteState.ObjectID));
 		NewGameState.AddStateObject(ScaningSiteState);
 
-		ScaningSiteState.ModifyRemainingScanTime(0.5);
+		ScaningSiteState.ModifyRemainingScanTime(default.ScanRateMod);
 	}
 
 }
@@ -97,6 +120,7 @@ static function EmptyCommsScientistSlot(XComGameState NewGameState, StateObjectR
 	local XComGameState_StaffSlot NewSlotState;
 	local XComGameState_Unit NewUnitState;
 	local float NewScanRate;
+	local float ModRate;
 	local array<XComGameState_ScanningSite> PossibleScanningSites;
 	local XComGameState_ScanningSite ScaningSiteState;
 
@@ -107,7 +131,8 @@ static function EmptyCommsScientistSlot(XComGameState NewGameState, StateObjectR
 
 	NewXComHQ = GetNewXComHQState(NewGameState);
 
-	NewScanRate = NewXComHQ.CurrentScanRate * 2;
+	ModRate = 1 / default.ScanRateMod;
+	NewScanRate = NewXComHQ.CurrentScanRate * ModRate;
 	NewXComHQ.CurrentScanRate = NewScanRate;
 
 	PossibleScanningSites = NewXComHQ.GetAvailableScanningSites();
@@ -116,7 +141,7 @@ static function EmptyCommsScientistSlot(XComGameState NewGameState, StateObjectR
 		ScaningSiteState = XComGameState_ScanningSite(NewGameState.CreateStateObject(class'XComGameState_ScanningSite', ScaningSiteState.ObjectID));
 		NewGameState.AddStateObject(ScaningSiteState);
 
-		ScaningSiteState.ModifyRemainingScanTime(2);
+		ScaningSiteState.ModifyRemainingScanTime(ModRate);
 	}
 }
 

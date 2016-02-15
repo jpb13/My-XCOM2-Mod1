@@ -3,7 +3,27 @@
   <PropertyGroup>
     <Guid>562a06b3-e4e7-49d4-a6fe-31fad3bd53ad</Guid>
     <Name>Scientist Staff Slots</Name>
-    <Description>Adding facility slots which can be staffed by scientists for additional bonuses.</Description>
+    <Description>I created this mod because I felt that the scientists in XCOM were generally underused - the only option you have for staffing them in the base game is to assign them to a laboratory. The aim of this mod is to give the player more options in how they use their scientists. There are several powerful effects available at the cost of research time. 
+
+This mod adds facility slots which can be staffed by scientists for additional bonuses. Be aware that assigning a scientist to any post other than a laboratory slot will stop their contribution to research. 
+
+Current additions - 
+
+Proving Grounds - If a project is completed whilst a scientist is assigned, all future projects of that type will complete instantly. 
+Resistance Comms - Increases your scanning speed by 100%. 
+Workshop - Creates drones which can staff scientist slots. 
+
+
+
+There are a few UI bugs that I am aware of - these may be fixed in the future. 
+
+This mod currently has limited functionality on existing saved games - any facilities that have already been built will not have the scientist slots. Rebuilding them will fix this. 
+
+This mod Overrides the following classes. It will be incompatible with any mod which also override these. 
+UIPersonnel_DropDownListItem 
+X2StrategyElement_DefaultFacilities 
+X2StrategyElement_DefaultStaffSlots 
+X2StrategyElement_DefaultTechs</Description>
     <SteamPublishID>0</SteamPublishID>
     <AssemblyName>My XCOM2 Mod1</AssemblyName>
     <RootNamespace>My XCOM2 Mod1</RootNamespace>
@@ -17,6 +37,9 @@
     <Folder Include="Src\ScientistStaffSlots\Classes" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Config\XComScientistStaffSlots.ini">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="ReadMe.txt" />
     <Content Include="ModPreview.jpg" />
     <Content Include="Config\XComEditor.ini" />
