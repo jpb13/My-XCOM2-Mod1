@@ -52,9 +52,8 @@ function GiveItemReward(XComGameState NewGameState, XComGameState_Tech TechState
 	//Modded code to set project to instant in future if an instance is completed
 	//Should make adjustments in the future so that they can't just bung a scientist in at the last minute
 	ProvingGround = XComHQ.GetFacilityByName('ProvingGround');
-
 	if (ProvingGround.HasFilledScientistSlot()){
-		TechState.TimeReductionScalar = GetProvingGroundReductionScalar();
+		TechState.TimeReductionScalar = TechState.TimeReductionScalar * GetProvingGroundReductionScalar();
 	}
 
 	TechState.ItemReward = ItemTemplate; // Needed for UI Alert display info
