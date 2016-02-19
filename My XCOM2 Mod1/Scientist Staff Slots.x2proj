@@ -37,6 +37,9 @@ X2StrategyElement_DefaultTechs</Description>
     <Folder Include="Src\ScientistStaffSlots\Classes" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Config\XComGameData.ini">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Config\XComScientistStaffSlots.ini">
       <SubType>Content</SubType>
     </Content>

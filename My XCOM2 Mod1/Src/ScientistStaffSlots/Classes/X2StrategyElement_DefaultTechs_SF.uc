@@ -1,4 +1,6 @@
-class X2StrategyElement_DefaultTechs_SF extends X2StrategyElement_DefaultTechs;
+class X2StrategyElement_DefaultTechs_SF extends X2StrategyElement_DefaultTechs config(ScientistStaffSlots);
+
+var config array<float>					ProvingGroundReductionScalar;
 
 function GiveItemReward(XComGameState NewGameState, XComGameState_Tech TechState, X2ItemTemplate ItemTemplate)
 {
@@ -9,6 +11,7 @@ function GiveItemReward(XComGameState NewGameState, XComGameState_Tech TechState
 	local XComGameState_Tech CompletedTechState;
 	local array<XComGameState_Tech> CompletedTechs;
 	local XComGameState_FacilityXCom ProvingGround;
+
 	
 	ItemTemplateManager = class'X2ItemTemplateManager'.static.GetItemTemplateManager();
 
@@ -50,8 +53,8 @@ function GiveItemReward(XComGameState NewGameState, XComGameState_Tech TechState
 	//Should make adjustments in the future so that they can't just bung a scientist in at the last minute
 	ProvingGround = XComHQ.GetFacilityByName('ProvingGround');
 
-	if (ProvingGround.GetEmptySciStaffSlotIndex() == -1){
-		TechState.bForceInstant = true;
+	if (ProvingGround.HasFilledScientistSlot()){
+		TechState.TimeReductionScalar = GetProvingGroundReductionScalar();
 	}
 
 	TechState.ItemReward = ItemTemplate; // Needed for UI Alert display info
@@ -60,4 +63,9 @@ function GiveItemReward(XComGameState NewGameState, XComGameState_Tech TechState
 	XComHQ.PutItemInInventory(NewGameState, ItemState);
 
 	`XEVENTMGR.TriggerEvent('ItemConstructionCompleted', ItemState, ItemState, NewGameState);
+}
+
+function float GetProvingGroundReductionScalar()
+{
+	return default.ProvingGroundReductionScalar[`DifficultySetting];
 }

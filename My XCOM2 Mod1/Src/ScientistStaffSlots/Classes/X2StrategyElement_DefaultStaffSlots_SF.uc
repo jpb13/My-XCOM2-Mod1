@@ -96,7 +96,7 @@ static function FillCommsScientistSlot(XComGameState NewGameState, StateObjectRe
 	FillSlot(NewGameState, SlotRef, UnitInfo, NewSlotState, NewUnitState);
 
 	//Halts bonus to research
-	NewUnitState.SkillLevelBonus += -1;
+	NewUnitState.SkillLevelBonus += -GetContributionDefault(NewUnitState);
 
 	NewXComHQ = GetNewXComHQState(NewGameState);
 
@@ -127,7 +127,7 @@ static function EmptyCommsScientistSlot(XComGameState NewGameState, StateObjectR
 	EmptySlot(NewGameState, SlotRef, NewSlotState, NewUnitState);
 
 	//Resumes bonus to research
-	NewUnitState.SkillLevelBonus += -1;
+	NewUnitState.SkillLevelBonus +=  GetContributionDefault(NewUnitState);
 
 	NewXComHQ = GetNewXComHQState(NewGameState);
 
@@ -185,7 +185,7 @@ static function FillScientistWorkshopSlot(XComGameState NewGameState, StateObjec
 	NewSlotState.AvailableGhostStaff = NewSlotState.MaxAdjacentGhostStaff;
 
 	//Halts bonus to research
-	NewUnitState.SkillLevelBonus += -1;
+	NewUnitState.SkillLevelBonus += - GetContributionDefault(NewUnitState);
 }
 
 static function EmptyScientistWorkshopSlot(XComGameState NewGameState, StateObjectReference SlotRef)
@@ -201,7 +201,7 @@ static function EmptyScientistWorkshopSlot(XComGameState NewGameState, StateObje
 	NewSlotState.AvailableGhostStaff = 0;
 
 	//Resumes bonus to research
-	NewUnitState.SkillLevelBonus += 1;
+	NewUnitState.SkillLevelBonus +=  GetContributionDefault(NewUnitState);
 }
 
 //#############################################################################################
@@ -240,7 +240,7 @@ static function FillProvingGroundSciSlot(XComGameState NewGameState, StateObject
 	FillSlot(NewGameState, SlotRef, UnitInfo, NewSlotState, NewUnitState);
 
 	//Halts bonus to research
-	NewUnitState.SkillLevelBonus += -1;
+	NewUnitState.SkillLevelBonus += - GetContributionDefault(NewUnitState);
 }
 
 static function EmptyProvingGroundSciSlot(XComGameState NewGameState, StateObjectReference SlotRef)
@@ -251,5 +251,5 @@ static function EmptyProvingGroundSciSlot(XComGameState NewGameState, StateObjec
 	EmptySlot(NewGameState, SlotRef, NewSlotState, NewUnitState);
 
 	//Resumes bonus to research
-	NewUnitState.SkillLevelBonus += 1;
+	NewUnitState.SkillLevelBonus +=  GetContributionDefault(NewUnitState);
 }
