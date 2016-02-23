@@ -19,6 +19,17 @@ class X2DownloadableContentInfo_ScientistFacilitySlots extends X2DownloadableCon
 //This was a first attempt at getting it to load on existing campaigns, failed entirely.
 static event OnLoadedSavedGame()
 {
+//	local X2FacilityTemplate FacilityTemplate;
+//	local X2FacilityTemplate ReplacementFacility;
+//	local X2StrategyElementTemplateManager StratMgr;	
+//	StratMgr = class'X2StrategyElementTemplateManager'.static.GetStrategyElementTemplateManager();
+
+//	facilityTemplate = X2FacilityTemplate(StratMgr.FindStrategyElementTemplate('ProvingGround'));
+
+//	if(FacilityTemplate.StaffSlots.length == 1){
+//		ReplacementFacility = X2FacilityTemplate(class'X2StrategyElement_DefaultFacilities_SF'.static.CreateProvingGroundTemplate());
+//		StratMgr.AddStrategyElementTemplate(replacementFacility, true);
+//	}
 	//UpdateTemplates(none,'Workshop');
 	//UpdateTemplates(none,'ProvingGround');
 	//UpdateTemplates(none,'ResistanceComms');

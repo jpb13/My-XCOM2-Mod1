@@ -38,6 +38,73 @@ static function array<X2DataTemplate> CreateTemplates()
 	return StaffSlots;
 }
 
+//
+//Utility funcs
+//
+
+static function fillSciSlot(XComGameState_Unit NewUnitState, StaffUnitInfo UnitInfo){
+	//Halts bonus to research
+	if(!UnitInfo.bGhostUnit){
+		NewUnitState.SkillLevelBonus -= GetContributionDefault(NewUnitState);
+	}
+}
+
+static function emptySciSlot(XComGameState_Unit NewUnitState){
+	//Resumes bonus to research
+
+	if(NewUnitState.SkillLevelBonus < 0){
+		NewUnitState.SkillLevelBonus = 0;
+	}
+}
+
+//#############################################################################################
+//----------------  Override of laboratory funcs ---------------------------------------------
+//#############################################################################################
+
+static function X2DataTemplate CreateLaboratoryStaffSlotTemplate()
+{
+	local X2StaffSlotTemplate Template;
+
+	`CREATE_X2TEMPLATE(class'X2StaffSlotTemplate', Template, 'LaboratoryStaffSlot');
+	Template.bScientistSlot = true;
+	Template.FillFn = FillLaboratorySlot;
+	Template.EmptyFn = EmptyLaboratorySlot;
+	Template.GetContributionFromSkillFn = GetContributionDefault;
+	Template.GetAvengerBonusAmountFn = GetAvengerBonusDefault;
+	Template.GetNameDisplayStringFn = GetNameDisplayStringDefault;
+	Template.GetSkillDisplayStringFn = GetSkillDisplayStringDefault;
+	Template.GetBonusDisplayStringFn = GetLaboratoryBonusDisplayString;
+	Template.GetLocationDisplayStringFn = GetLocationDisplayStringDefault;
+	Template.IsUnitValidForSlotFn = IsUnitValidForSlotDefault;
+	Template.IsStaffSlotBusyFn = IsStaffSlotBusyDefault;
+	Template.MatineeSlotName = "Scientist";
+
+	return Template;
+}
+
+static function FillLaboratorySlot(XComGameState NewGameState, StateObjectReference SlotRef, StaffUnitInfo UnitInfo)
+{
+	local XComGameState_Unit NewUnitState;
+	local XComGameState_StaffSlot NewSlotState;
+
+	FillSlot(NewGameState, SlotRef, UnitInfo, NewSlotState, NewUnitState);
+
+	NewUnitState.SkillLevelBonus += NewSlotState.GetMyTemplate().GetContributionFromSkillFn(NewUnitState);
+	`Redscreen("Test" $NewUnitState.SkillLevelBonus);
+}
+
+static function EmptyLaboratorySlot(XComGameState NewGameState, StateObjectReference SlotRef)
+{
+	local XComGameState_StaffSlot NewSlotState;
+	local XComGameState_Unit NewUnitState;
+
+	EmptySlot(NewGameState, SlotRef, NewSlotState, NewUnitState);
+
+	NewUnitState.SkillLevelBonus -= NewSlotState.GetMyTemplate().GetContributionFromSkillFn(NewUnitState);
+	`Redscreen("Test2" $NewUnitState.SkillLevelBonus);
+
+
+}
 
 //#############################################################################################
 //----------------  New code for Resistance Comms ---------------------------------------------
@@ -95,8 +162,7 @@ static function FillCommsScientistSlot(XComGameState NewGameState, StateObjectRe
 
 	FillSlot(NewGameState, SlotRef, UnitInfo, NewSlotState, NewUnitState);
 
-	//Halts bonus to research
-	NewUnitState.SkillLevelBonus += -GetContributionDefault(NewUnitState);
+	fillSciSlot(NewUnitState, UnitInfo);
 
 	NewXComHQ = GetNewXComHQState(NewGameState);
 
@@ -126,8 +192,7 @@ static function EmptyCommsScientistSlot(XComGameState NewGameState, StateObjectR
 
 	EmptySlot(NewGameState, SlotRef, NewSlotState, NewUnitState);
 
-	//Resumes bonus to research
-	NewUnitState.SkillLevelBonus +=  GetContributionDefault(NewUnitState);
+	emptySciSlot(NewUnitState);
 
 	NewXComHQ = GetNewXComHQState(NewGameState);
 
@@ -184,8 +249,7 @@ static function FillScientistWorkshopSlot(XComGameState NewGameState, StateObjec
 	NewSlotState.MaxAdjacentGhostStaff = GetWorkshopContribution(NewUnitState);
 	NewSlotState.AvailableGhostStaff = NewSlotState.MaxAdjacentGhostStaff;
 
-	//Halts bonus to research
-	NewUnitState.SkillLevelBonus += - GetContributionDefault(NewUnitState);
+	fillSciSlot(NewUnitState, UnitInfo);
 }
 
 static function EmptyScientistWorkshopSlot(XComGameState NewGameState, StateObjectReference SlotRef)
@@ -200,8 +264,7 @@ static function EmptyScientistWorkshopSlot(XComGameState NewGameState, StateObje
 	NewSlotState.MaxAdjacentGhostStaff = 0;
 	NewSlotState.AvailableGhostStaff = 0;
 
-	//Resumes bonus to research
-	NewUnitState.SkillLevelBonus +=  GetContributionDefault(NewUnitState);
+	emptySciSlot(NewUnitState);
 }
 
 //#############################################################################################
@@ -239,8 +302,7 @@ static function FillProvingGroundSciSlot(XComGameState NewGameState, StateObject
 	
 	FillSlot(NewGameState, SlotRef, UnitInfo, NewSlotState, NewUnitState);
 
-	//Halts bonus to research
-	NewUnitState.SkillLevelBonus += - GetContributionDefault(NewUnitState);
+	fillSciSlot(NewUnitState, UnitInfo);
 }
 
 static function EmptyProvingGroundSciSlot(XComGameState NewGameState, StateObjectReference SlotRef)
@@ -250,6 +312,5 @@ static function EmptyProvingGroundSciSlot(XComGameState NewGameState, StateObjec
 	
 	EmptySlot(NewGameState, SlotRef, NewSlotState, NewUnitState);
 
-	//Resumes bonus to research
-	NewUnitState.SkillLevelBonus +=  GetContributionDefault(NewUnitState);
+	emptySciSlot(NewUnitState);
 }

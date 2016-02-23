@@ -37,9 +37,6 @@ X2StrategyElement_DefaultTechs</Description>
     <Folder Include="Src\ScientistStaffSlots\Classes" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Config\XComGameData.ini">
-      <SubType>Content</SubType>
-    </Content>
     <Content Include="Config\XComScientistStaffSlots.ini">
       <SubType>Content</SubType>
     </Content>
@@ -50,6 +47,9 @@ X2StrategyElement_DefaultTechs</Description>
     <Content Include="Config\XComGame.ini" />
     <Content Include="Localization\XComGame.int" />
     <Content Include="Src\ScientistStaffSlots\Classes\UIPersonnel_DropDownListItem_SF.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ScientistStaffSlots\Classes\UIPersonnel_DropDownToolTip_SF.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\ScientistStaffSlots\Classes\X2DownloadableContentInfo_ScientistFacilitySlots.uc">

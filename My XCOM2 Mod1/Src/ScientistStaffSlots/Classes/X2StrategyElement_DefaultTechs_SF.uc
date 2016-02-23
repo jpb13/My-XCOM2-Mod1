@@ -11,8 +11,6 @@ function GiveItemReward(XComGameState NewGameState, XComGameState_Tech TechState
 	local XComGameState_Tech CompletedTechState;
 	local array<XComGameState_Tech> CompletedTechs;
 	local XComGameState_FacilityXCom ProvingGround;
-	local float tempTechScalar;
-
 	
 	ItemTemplateManager = class'X2ItemTemplateManager'.static.GetItemTemplateManager();
 
@@ -54,18 +52,9 @@ function GiveItemReward(XComGameState NewGameState, XComGameState_Tech TechState
 	//Should make adjustments in the future so that they can't just bung a scientist in at the last minute
 	//Boolean in facility object that is set to true on project start and false on scientist removal
 	ProvingGround = XComHQ.GetFacilityByName('ProvingGround');
+
 	if (ProvingGround.HasFilledScientistSlot()){
-		if(TechState.TimeReductionScalar == 0){
-			TechState.TimeReductionScalar = GetProvingGroundReductionScalar();
-		} else {
-			tempTechScalar = TechState.TimeReductionScalar * (1 + GetProvingGroundReductionScalar());
-			if(tempTechScalar > 1) {
-				TechState.bForceInstant = true;
-				TechState.TimeReductionScalar = 0;	
-			} else {
-				TechState.TimeReductionScalar = tempTechScalar;
-			}
-		}
+		TechState.bForceInstant = true;
 	}
 
 	TechState.ItemReward = ItemTemplate; // Needed for UI Alert display info
