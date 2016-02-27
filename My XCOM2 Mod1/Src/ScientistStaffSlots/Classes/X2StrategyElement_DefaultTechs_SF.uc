@@ -11,6 +11,8 @@ function GiveItemReward(XComGameState NewGameState, XComGameState_Tech TechState
 	local XComGameState_Tech CompletedTechState;
 	local array<XComGameState_Tech> CompletedTechs;
 	local XComGameState_FacilityXCom ProvingGround;
+	local SF_Utilities SF_Utils;
+	local float TempTechReduction;
 	
 	ItemTemplateManager = class'X2ItemTemplateManager'.static.GetItemTemplateManager();
 
@@ -52,11 +54,23 @@ function GiveItemReward(XComGameState NewGameState, XComGameState_Tech TechState
 	//Should make adjustments in the future so that they can't just bung a scientist in at the last minute
 	//Boolean in facility object that is set to true on project start and false on scientist removal
 	ProvingGround = XComHQ.GetFacilityByName('ProvingGround');
+	SF_Utils = class'SF_Utilities'.static.GetSF_Utilities();
 
 	if (ProvingGround.HasFilledScientistSlot()){
-		TechState.bForceInstant = true;
+		NewGameState.AddStateObject(SF_Utils);
+		SF_Utils.incrementTimesCompletedWithSci(TechState);
 	}
 
+	`RedScreen("Proving ground completions" $SF_Utils.getProvingGroundCompletions(TechState));
+
+	TempTechReduction = SF_Utils.getProvingGroundCompletions(TechState) * ProvingGroundReductionScalar[`DifficultySetting];
+
+	if(TempTechReduction >= 1) {
+		TechState.bForceInstant = true;
+	} else {
+		TechState.TimeReductionScalar = TempTechReduction;
+	}
+	
 	TechState.ItemReward = ItemTemplate; // Needed for UI Alert display info
 	TechState.bSeenResearchCompleteScreen = false; // Reset the research report for techs that are repeatable
 
